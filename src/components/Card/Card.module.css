@@ -1,0 +1,38 @@
+.cardBox {
+  text-align: center;
+  font-size: 0.75rem;
+  border-radius: 10px;
+  position: relative;
+}
+
+.cardBox:hover {
+  background-color: #0deb09;
+}
+
+.cardImg {
+  border-radius: 10px;
+  background-color: azure;
+}
+
+.close {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border-radius: 10px;
+  border: none;
+}
+
+.close:hover {
+  color: #fff;
+  background-color: #000;
+}
+
+.linkDetail {
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.linkDetail:hover {
+  color: #000;
+}
