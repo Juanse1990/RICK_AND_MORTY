@@ -1,0 +1,86 @@
+import "./App.css";
+import Cards from "./components/Cards/Cards.jsx";
+import Nav from "./components/Nav/Nav";
+import About from "./components/About/About";
+import Detail from "./components/Detail/Detail";
+import Form from "./components/Form/Form";
+import Favorites from "./components/Favorites/Favorites";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+
+//const URL_BASE = `https://be-a-rym.up.railway.app/api/character`;
+//const API_KEY = `17a37db0cfae.211768942aded0a9d1d9`;
+
+const URL = "http://localhost:3001/rickandmorty/login";
+const email = `juanse@email.com`;
+const password = `123asd`;
+
+function App() {
+  const [characters, setCharacters] = useState([]);
+  const [access, setAccess] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const login = async (userData) => {
+    try {
+      const { email, password } = userData;
+      const { data } = await axios(
+        URL + `?email=${email}&password=${password}`
+      );
+      const { access } = data;
+      setAccess(access);
+      access && navigate("/home");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleLogOut = () => {
+    setAccess(false);
+  };
+
+  useEffect(() => {
+    !access && navigate(`/`);
+  }, [access]);
+
+  const onSearch = async (id) => {
+    try {
+      const { data } = await axios(
+        `http://localhost:3001/rickandmorty/character/${id}`
+      );
+      if (data.name) {
+        setCharacters((oldChars) => [...oldChars, data]);
+      }
+    } catch (error) {
+      alert("¡No hay personajes con este ID!");
+    }
+  };
+
+  const onClose = (id) => {
+    const charactersFiltered = characters.filter(
+      (character) => character.id !== id
+    );
+    setCharacters(charactersFiltered);
+  };
+
+  return (
+    <div className="App">
+      {location.pathname !== `/` && (
+        <Nav onSearch={onSearch} handleLogOut={handleLogOut} />
+      )}
+      <Routes>
+        <Route path="/" element={<Form login={login} />} />
+        <Route
+          path="/home"
+          element={<Cards characters={characters} onClose={onClose} />}
+        />
+        <Route path="/about" element={<About />} />
+        <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/favorites" element={<Favorites />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
